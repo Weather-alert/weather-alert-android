@@ -1,9 +1,8 @@
 package com.example.weatheralert
 
 import android.app.Application
-import android.content.Context
 import com.example.weatheralert.Log.MyDebugTree
-import com.example.weatheralert.repository.AppContextHolder
+import com.example.weatheralert.configs.AppContextHolder
 import timber.log.Timber
 
 class MyApp: Application() {

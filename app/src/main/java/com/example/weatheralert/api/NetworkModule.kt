@@ -1,6 +1,6 @@
 package com.example.weatheralert.api
 
-import com.example.weatheralert.repository.AppConfig
+import com.example.weatheralert.configs.AppConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

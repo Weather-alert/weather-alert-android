@@ -1,11 +1,10 @@
-package com.example.weatheralert.repository
+package com.example.weatheralert.configs
 
 import android.annotation.SuppressLint
 import android.provider.Settings
-import com.example.weatheralert.repository.AppContextHolder
 
 object AppConfig {
-    val userServiceBaseUrl = "http://10.229.47.67:8080/"
+    val userServiceBaseUrl = "https://leeanna-genotypical-noncausally.ngrok-free.dev"
     @SuppressLint("HardwareIds")
     val androidId = Settings.Secure.getString(
         AppContextHolder.context.contentResolver,

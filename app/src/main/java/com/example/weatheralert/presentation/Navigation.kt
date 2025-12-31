@@ -29,7 +29,7 @@ import com.example.weatheralert.Snackbar.SnackbarManager
 import com.example.weatheralert.presentation.Screens.LogScreen
 import com.example.weatheralert.presentation.Screens.MainScreen
 import com.example.weatheralert.presentation.Screens.SecondScreen
-import com.example.weatheralert.repository.Routes
+import com.example.weatheralert.configs.Routes
 import timber.log.Timber
 
 

@@ -1,4 +1,4 @@
-package com.example.weatheralert.repository
+package com.example.weatheralert.configs
 
 object Routes {
     const val MainScreen = "MainScreen"

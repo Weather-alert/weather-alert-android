@@ -78,5 +78,5 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
     // GIF
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.35.0-alpha")
 }

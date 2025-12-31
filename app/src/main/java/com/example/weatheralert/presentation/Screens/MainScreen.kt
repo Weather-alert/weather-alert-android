@@ -1,14 +1,13 @@
 package com.example.weatheralert.presentation.Screens
 
 import android.annotation.SuppressLint
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,19 +16,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.rememberAsyncImagePainter
+import androidx.core.content.ContextCompat.getDrawable
 import com.example.weatheralert.R
-import com.example.weatheralert.ViewModel
 import com.example.weatheralert.api.NetworkModule
 import com.example.weatheralert.presentation.MainViewModel
-import com.example.weatheralert.repository.AppConfig
+import com.example.weatheralert.configs.AppConfig
 import com.example.weatheralert.ui.theme.WeatherAlertTheme
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -45,7 +46,6 @@ fun MainScreen(vm: MainViewModel){
             ){
                 val isLoading = remember { mutableStateOf(false) }
 
-                Greeting("lojze")
                 Button(
                     {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -57,9 +57,9 @@ fun MainScreen(vm: MainViewModel){
                                 isLoading.value = false
                             }
                             if(r.isSuccessful()){
-
+                                Timber.d("Successfully created user")
                             } else{
-
+                                Timber.e("Failed to create user")
                             }
                         }
                     }
@@ -77,9 +77,15 @@ fun MainScreen(vm: MainViewModel){
 @Composable
 fun GifImage(modifier: Modifier = Modifier) {
     Image(
-        painter = rememberAsyncImagePainter(R.drawable.loading),
-        contentDescription = "Loading",
-        modifier = modifier.size(50.dp,50.dp)
+        modifier = modifier.size(20.dp),   //crops the image to circle shape
+        painter = rememberDrawablePainter(
+            drawable = getDrawable(
+                LocalContext.current,
+                R.drawable.loading
+            )
+        ),
+        contentDescription = "Loading animation",
+        contentScale = ContentScale.FillWidth,
     )
 }
 
