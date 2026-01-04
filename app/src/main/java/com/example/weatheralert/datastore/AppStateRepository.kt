@@ -2,6 +2,7 @@ package com.example.weatheralert.datastore
 
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class AppStateRepository(
@@ -11,6 +12,14 @@ class AppStateRepository(
     private val dataStore = context.appStateDataStore
 
     val appState: Flow<AppState> = dataStore.data
+
+    suspend fun initialize() {
+        if (appState.first().isRegistered == false){
+            dataStore.updateData { state ->
+               state
+            }
+        }
+    }
 
     suspend fun setAndroidId(id: String) {
         dataStore.updateData {

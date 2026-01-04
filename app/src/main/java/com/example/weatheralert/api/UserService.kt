@@ -1,6 +1,7 @@
 package com.example.weatheralert.api
 
 import com.example.weatheralert.api.dataClass.User
+import com.example.weatheralert.api.dataClass.UserUpdateRequest
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -39,7 +40,7 @@ interface UserService {
     @PATCH("users/{id}")
     suspend fun updateUser(
         @Path("id") id: String,
-        @Body request: User
+        @Body request: UserUpdateRequest
     ): Response<Unit>
 
     // DELETE /users/{id}

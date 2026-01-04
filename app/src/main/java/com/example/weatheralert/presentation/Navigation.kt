@@ -48,8 +48,8 @@ enum class Destination(
 fun Navigation(
     vm: MainViewModel = viewModel()
 ) {
+    val logsVM: LogsViewModel = viewModel()
     val navController = rememberNavController()
-
     //======================== Snackbar ===================================
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(true) {
@@ -108,7 +108,7 @@ fun Navigation(
                 SecondScreen(vm)
             }
             composable(Routes.LogScreen){
-                LogScreen()
+                LogScreen(logsVM)
             }
         }
     }

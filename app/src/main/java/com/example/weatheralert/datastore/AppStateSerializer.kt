@@ -8,7 +8,12 @@ import java.io.OutputStream
 
 object AppStateSerializer : Serializer<AppState> {
 
-    override val defaultValue: AppState = AppState.getDefaultInstance()
+    override val defaultValue: AppState =
+        AppState.newBuilder()
+        .setIsRegistered(false)
+        .setLastSync(5L)
+        .setAndroidId("Nothing")
+        .build()
 
     override suspend fun readFrom(input: InputStream): AppState {
         try {
