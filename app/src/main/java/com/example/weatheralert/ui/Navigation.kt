@@ -1,4 +1,4 @@
-package com.example.weatheralert.presentation
+package com.example.weatheralert.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,9 +26,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.weatheralert.Snackbar.SnackbarManager
-import com.example.weatheralert.presentation.Screens.LogScreen
-import com.example.weatheralert.presentation.Screens.MainScreen
-import com.example.weatheralert.presentation.Screens.SecondScreen
+import com.example.weatheralert.ui.Screens.LogScreen
+import com.example.weatheralert.ui.Screens.MainScreen
+import com.example.weatheralert.ui.Screens.SecondScreen
 import com.example.weatheralert.configs.Routes
 import timber.log.Timber
 
@@ -37,7 +37,8 @@ enum class Destination(
     val route: String,
     val icon: ImageVector,
     val contentDescription: String,
-    val label: String) {
+    val label: String
+) {
 
     MainScreen(Routes.MainScreen, Icons.Default.Home,"Home Screen","Home"),
     SecondScreen(Routes.SecondScreen,Icons.Default.Settings,"Second Screen","Screen 2"),

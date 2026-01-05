@@ -1,4 +1,4 @@
-package com.example.weatheralert.presentation
+package com.example.weatheralert.ui
 
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme

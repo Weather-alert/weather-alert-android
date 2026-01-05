@@ -4,7 +4,7 @@ data class UserUpdateRequest(
     var active: Boolean? = null,
     var latitude: Float? = null,
     var longitude: Float? = null,
-    var timeIntervalH: Int? = null // default is an hour
+    var timeIntervalH: Int? = null
 )
 
 data class User(

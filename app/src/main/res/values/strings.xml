@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherAlert</string>
-</resources>
+    <string name="notification_channel_id">NotifyChannel</string>
+    <string name="notification_channel_name" translatable="true">Weather</string>
+    </resources>
