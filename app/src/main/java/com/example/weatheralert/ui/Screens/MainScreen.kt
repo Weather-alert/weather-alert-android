@@ -93,7 +93,7 @@ fun RegisterButton(vm: MainViewModel){
 @Composable
 fun UnregisterButton(vm: MainViewModel){
     Button({
-        vm.setRegistered(false)
+        vm.unregisterUser()
     }){
         Text("Unregister user")
     }
@@ -121,6 +121,12 @@ fun CurrentSettings(vm: MainViewModel) {
 
         Text(
             text = "Time interval: ${userSettings?.timeIntervalH}",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Text(
+            text = "FCM token: ${userSettings?.token}",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )

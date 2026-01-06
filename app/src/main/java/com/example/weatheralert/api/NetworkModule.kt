@@ -1,6 +1,7 @@
 package com.example.weatheralert.api
 
 import com.example.weatheralert.configs.AppConfig
+import com.example.weatheralert.configs.AppContextHolder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,5 +22,5 @@ object NetworkModule {
         .client(client)
         .build()
 
-    val userService: UserService = retrofit.create(UserService::class.java)
+    val userService: UserService = UserService(AppContextHolder.context,retrofit.create(UserServiceClient::class.java))
 }

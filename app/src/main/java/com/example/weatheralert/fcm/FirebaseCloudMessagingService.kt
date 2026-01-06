@@ -1,24 +1,35 @@
 package com.example.weatheralert.fcm
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.os.Build
 import android.os.PowerManager
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.weatheralert.MainActivity
 import com.example.weatheralert.R
+import com.example.weatheralert.api.NetworkModule
+import com.example.weatheralert.api.dataClass.UserUpdateRequest
+import com.example.weatheralert.datastore.AppStateRepository
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.firebase.messaging.messaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
+    private val appStateRepository = AppStateRepository(this)
+
+    private val scope = CoroutineScope(Dispatchers.IO+ Job())
     /**
      * Called when message is received.
      *
@@ -60,7 +71,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage.notification?.let {
             Timber.d("Message Notification Body: ${it.body}")
-            it.body?.let { body -> sendNotification(body) }
+            it.body?.let { body -> sendNotification(it) }
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -111,17 +122,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      *
      * @param token The new token.
      */
-    private fun sendRegistrationToServer(token: String?) {
+    private fun sendRegistrationToServer(token: String) {
         // TODO: Implement this method to send token to your app server.
+        scope.launch {
+            appStateRepository.setToken(token)
+
+            if(appStateRepository.appState.first().isRegistered) {
+                NetworkModule.userService.updateUser(UserUpdateRequest(token = token))
+            }
+        }
         Timber.d("sendRegistrationTokenToServer($token)")
     }
 
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+     * @param notification FCM notification received.
      */
-    private fun sendNotification(messageBody: String) {
+    private fun sendNotification(notification: RemoteMessage.Notification) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val requestCode = 0
@@ -138,8 +156,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Default title")
-            .setContentText(messageBody)
+            .setContentTitle(notification.title)
+            .setContentText(notification.body)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)

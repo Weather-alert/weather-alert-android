@@ -11,7 +11,6 @@ object AppStateSerializer : Serializer<AppState> {
     override val defaultValue: AppState =
         AppState.newBuilder()
         .setIsRegistered(false)
-        .setLastSync(5L)
         .setAndroidId("Nothing")
         .build()
 

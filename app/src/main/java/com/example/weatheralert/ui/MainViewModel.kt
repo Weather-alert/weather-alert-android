@@ -20,81 +20,42 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private val appStateRepository = AppStateRepository(application)
 
     val appState: LiveData<AppState> = appStateRepository.appState.asLiveData()
-    private val _user = MutableLiveData<User>(User(0,"null",false, LatLon(0f,0f),0))
+    private val _user = MutableLiveData<User>(User(0,"null",false, LatLon(0f,0f),0, token=""))
     val user: LiveData<User> = _user
-    fun setRegistered(b: Boolean){
-        viewModelScope.launch {
-            appStateRepository.setRegistered(b)
+
+    private suspend fun fetchCurrentSettings(){
+        val user = NetworkModule.userService.getUser()
+        if(user != null){
+            _user.value = user
         }
     }
     fun registerUser(doneFunction: () -> Unit){
         viewModelScope.launch {
-            try {
-                val r = NetworkModule.userService.createUser(id = AppConfig.androidId)
-
-                if (r.isSuccessful()) {
-                    setRegistered(true)
-                    Timber.d("Successfully created user")
-                } else {
-                    Timber.e("Failed to create user ${r.body()}")
-                }
-                fetchCurrentSettings()
-            } catch (e: Exception) {
-                Timber.e("Failed to run createUser ${e.cause}")
-            } finally {
-                doneFunction()
-            }
+            val r = NetworkModule.userService.createUser()
+            fetchCurrentSettings()
+            doneFunction()
         }
     }
-    private suspend fun fetchCurrentSettings(){
-        try {
-            val r = NetworkModule.userService.getUser(id = AppConfig.androidId)
-            if(r.isSuccessful()){
-                val tmpUser: User = r.body()!!
-                _user.postValue(tmpUser)
-                Timber.d("Successfully fetched user settings")
-            } else {
-                Timber.e("Failed to get user ${r.body()}")
-            }
-        } catch(e: Exception){
-            Timber.e("Failed to fetch userData ${e.cause}")
+    fun unregisterUser(){
+        viewModelScope.launch {
+            val r = NetworkModule.userService.unregisterUser()
+            fetchCurrentSettings()
         }
+
     }
     fun updateUser(doneFunction: () -> Unit, req: UserUpdateRequest){
         viewModelScope.launch {
-            try {
-                val r = NetworkModule.userService.updateUser(id = AppConfig.androidId, req)
-
-                if (r.isSuccessful()) {
-                    Timber.d("Successfully updated user")
-                } else{
-                    Timber.e("Failed to update user ${r.body()}")
-                }
+            val r = NetworkModule.userService.updateUser(req)
+            if(r == true){
                 fetchCurrentSettings()
-            } catch (e: Exception) {
-                    Timber.e("Failed to RUN update user ${e.cause}")
-            } finally {
                 doneFunction()
             }
         }
     }
+
     init {
         viewModelScope.launch {
-            appStateRepository.initialize()
-
-            try{
-                val r = NetworkModule.userService.getUser(AppConfig.androidId)
-                if(r.isSuccessful()){
-                    //already registered
-                    setRegistered(true)
-                    fetchCurrentSettings()
-                } else {
-                    setRegistered(false)
-                }
-            } catch (e: Exception){
-                Timber.e("Can't run getUser ${e.cause}")
-            }
-            Timber.d("Registered: ${appState.value?.isRegistered}")
+            fetchCurrentSettings()
         }
     }
 }

@@ -7,6 +7,14 @@ import android.os.Build
 import androidx.compose.ui.graphics.Color
 import com.example.weatheralert.Log.MyDebugTree
 import com.example.weatheralert.configs.AppContextHolder
+import com.example.weatheralert.datastore.AppStateRepository
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class MyApp: Application() {
@@ -34,6 +42,8 @@ class MyApp: Application() {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(channel)
         }
+
+        AppStateRepository(this).fetchToken()
 
         AppContextHolder.context = applicationContext
         Timber.plant(MyDebugTree(this))
