@@ -86,6 +86,12 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.protobuf.javalite)
 
+    //Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    //WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.11.0")
+
     // FCM
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))

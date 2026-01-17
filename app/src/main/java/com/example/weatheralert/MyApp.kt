@@ -1,13 +1,19 @@
 package com.example.weatheralert
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.compose.ui.graphics.Color
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.example.weatheralert.Log.MyDebugTree
 import com.example.weatheralert.configs.AppContextHolder
 import com.example.weatheralert.datastore.AppStateRepository
+import com.example.weatheralert.managers.LocationTrackWorker
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
@@ -16,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class MyApp: Application() {
 
@@ -47,6 +54,23 @@ class MyApp: Application() {
 
         AppContextHolder.context = applicationContext
         Timber.plant(MyDebugTree(this))
+
+        uploadWorker()
     }
 
+    @SuppressLint("InvalidPeriodicWorkRequestInterval")
+    fun uploadWorker(){
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val uploadWorker = PeriodicWorkRequest.Builder(
+            LocationTrackWorker::class.java,
+            5,
+            TimeUnit.SECONDS)
+            .setConstraints(constraints)
+            .build()
+        WorkManager.getInstance(this).enqueue(uploadWorker)
+    }
 }

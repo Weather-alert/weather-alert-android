@@ -1,6 +1,7 @@
 package com.example.weatheralert
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.pm.PackageManager
@@ -14,12 +15,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.core.content.ContextCompat
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import com.example.weatheralert.managers.LocationTrackWorker
 import com.example.weatheralert.ui.Navigation
 import com.example.weatheralert.ui.theme.WeatherAlertTheme
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
 
@@ -103,6 +111,21 @@ class MainActivity : ComponentActivity() {
         }
     }
     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            WeatherAlertTheme {
+                Navigation()
+                askNotificationPermission()
+             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        showLocationDialog()
+    }
     private fun askNotificationPermission() {
         // This is only necessary for API Level > 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -117,14 +140,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            WeatherAlertTheme {
-                Navigation()
-                askNotificationPermission()
-            }
-        }
+    private fun showLocationDialog() {
+        requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
+    val requestLocationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        }
 }
