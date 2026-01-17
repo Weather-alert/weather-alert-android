@@ -1,0 +1,26 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (SDK path, etc.) - IMPORTANT
+local.properties
+
+# Log Files
+*.log
+
+# Android Studio / IntelliJ files
+.idea/
+*.iml
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Secrets (Add your keystore if you don't want it in Git)
+*.jks
+*.keystore
+google-services.json
